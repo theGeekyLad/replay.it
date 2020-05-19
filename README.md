@@ -44,4 +44,6 @@ _**Note:** When the device is connected to the PC and you run this program for t
 
 It's important to note that a _"swipe"_ gesture is complete only after you perform a _"tap"_ anywhere on the screen once you've finished swiping.
 
+---
+
 Made with :heart: by `theGeekyLad`
