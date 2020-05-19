@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="adb-automate:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/adb_automate_jar</output-path>
+    <root id="archive" name="adb-automate.jar">
+      <element id="module-output" name="adb-automate" />
+    </root>
+  </artifact>
+</component>
