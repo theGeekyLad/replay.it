@@ -21,6 +21,9 @@ public class ADBAutomate {
 
         try {
 
+            // simple query list of devices - throws the adb authentication pop-up
+            Runtime.getRuntime().exec("adb devices").waitFor();
+
             // start sniffing for gestures
             GrabGesturesThread gesturesThread = new GrabGesturesThread();
             gesturesThread.start();
