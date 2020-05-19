@@ -46,4 +46,4 @@ It's important to note that a _"swipe"_ gesture is complete only after you perfo
 
 ---
 
-Made with <3 by `theGeekyLad`
+Made with :heart: by `theGeekyLad`
