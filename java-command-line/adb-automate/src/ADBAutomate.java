@@ -10,19 +10,31 @@ import java.util.Scanner;
 public class ADBAutomate {
 
     private volatile ArrayList<Action> actions = new ArrayList<>();
+    private String adb;
 
     // entry point to the whole program
     public static void main(String[] args) {
         ADBAutomate adbAutomate = new ADBAutomate();
-        adbAutomate.automate();
+        adbAutomate.automate(true);
     }
 
-    private void automate() {
+    private void automate(boolean isUnix) {
 
         try {
 
+            // set adb path based on environment
+            adb = isUnix ? "./adb/platform-tools-linux-macos/adb" : ".\\adb\\platform-tools-windows\\adb.exe";
+            drawLine();
+            System.out.println("Enironment: " + (isUnix ? "Linux / MacOS" : "Windows"));
+
             // simple query list of devices - throws the adb authentication pop-up
-            Runtime.getRuntime().exec("adb devices").waitFor();
+            Process devicesProcess = Runtime.getRuntime().exec(adb + " devices");
+            devicesProcess.waitFor();
+//            String t1;
+//            BufferedReader reader = new BufferedReader(new InputStreamReader(devicesProcess.getInputStream()));
+//            while ((t1 = reader.readLine()) != null)
+//                System.out.println(t1);
+//            System.out.println("Done");
 
             // start sniffing for gestures
             GrabGesturesThread gesturesThread = new GrabGesturesThread();
@@ -38,28 +50,28 @@ public class ADBAutomate {
                 int ch = Integer.parseInt(scanner.nextLine());
                 switch (ch) {
                     case 1:
-                        cmd = "adb shell input keyevent 26";
+                        cmd = adb + " shell input keyevent 26";
                         actions.add(new Action(cmd, false));
                         System.out.println("Added: power button will be triggered.");
                         break;
                     case 2:
                         System.out.print("Enter some text: ");
-                        cmd = "adb shell input text \"" + scanner.nextLine() + "\"";
+                        cmd = adb + " shell input text \"" + scanner.nextLine() + "\"";
                         actions.add(new Action(cmd, false));
                         System.out.println("Added: text will be sent.");
                         break;
                     case 3:
-                        cmd = "adb shell input keyevent 66";
+                        cmd = adb + " shell input keyevent 66";
                         actions.add(new Action(cmd, false));
                         System.out.println("Added: ENTER will be clicked.");
                         break;
                     case 4:
-                        cmd = "adb shell input keyevent 4";
+                        cmd = adb + " shell input keyevent 4";
                         actions.add(new Action(cmd, false));
                         System.out.println("Added: BACK will be pressed.");
                         break;
                     case 5:
-                        cmd = "adb shell input keyevent 3";
+                        cmd = adb + " shell input keyevent 3";
                         actions.add(new Action(cmd, false));
                         System.out.println("Added: Returns to home screen.");
                         break;
@@ -79,13 +91,13 @@ public class ADBAutomate {
                         break;
                     case 7:
                         System.out.print("Keycode: ");
-                        cmd = "adb shell input keyevent " + (t = Integer.parseInt(scanner.nextLine()));
+                        cmd = adb + " shell input keyevent " + (t = Integer.parseInt(scanner.nextLine()));
                         actions.add(new Action(cmd, false));
                         System.out.println("Added: key " + t + " will be triggered.");
                         break;
                     case 8:
                         System.out.print("Enter the package and activity name as: package_name/.activity_name: ");  // com.whatsapp/.Main
-                        cmd = "adb shell am start " + scanner.nextLine();
+                        cmd = adb + " shell am start " + scanner.nextLine();
                         actions.add(new Action(cmd, false));
                         System.out.println("Added: package will be launched.");
                         break;
@@ -93,7 +105,7 @@ public class ADBAutomate {
                         System.out.print("Enter the app name: ");  // com.whatsapp/.Main
                         String appName = scanner.nextLine(), line;
                         StringBuilder resultPackages = new StringBuilder();
-                        Process listPackagesProcess = Runtime.getRuntime().exec("adb shell pm list packages | grep " + appName);
+                        Process listPackagesProcess = Runtime.getRuntime().exec(adb + " shell pm list packages | grep " + appName);
                         listPackagesProcess.waitFor();
                         BufferedReader packageListReader = new BufferedReader(new InputStreamReader(listPackagesProcess.getInputStream()));
                         while ((line = packageListReader.readLine()) != null)
@@ -103,7 +115,7 @@ public class ADBAutomate {
 
                         System.out.print("Enter the package name from the above list: ");
                         String packageName = scanner.nextLine();
-                        Process listMainActivityProcess = Runtime.getRuntime().exec("adb shell pm dump " + packageName + " | grep -A 1 MAIN | sed -n '2 p'");
+                        Process listMainActivityProcess = Runtime.getRuntime().exec(adb + " shell pm dump " + packageName + " | grep -A 1 MAIN | sed -n '2 p'");
                         listMainActivityProcess.waitFor();
                         BufferedReader mainActivityReader = new BufferedReader(new InputStreamReader(listMainActivityProcess.getInputStream()));
                         System.out.println("\nCopy this: " + mainActivityReader.readLine().trim().split(" ")[1]);
@@ -161,9 +173,9 @@ public class ADBAutomate {
                     if (action.touchAction != null) {
                         Point gesture = action.touchAction;
                         if (gesture.toPoint == null)  // tap
-                            Runtime.getRuntime().exec(String.format("adb shell input tap %s %s", gesture.x, gesture.y)).waitFor();
+                            Runtime.getRuntime().exec(String.format(adb + " shell input tap %s %s", gesture.x, gesture.y)).waitFor();
                         else  // touch action
-                            Runtime.getRuntime().exec(String.format("adb shell input swipe %s %s %s %s", gesture.x, gesture.y, gesture.toPoint.x, gesture.toPoint.y)).waitFor();
+                            Runtime.getRuntime().exec(String.format(adb + " shell input swipe %s %s %s %s", gesture.x, gesture.y, gesture.toPoint.x, gesture.toPoint.y)).waitFor();
                     } else {  // command action
                         if (!action.isCustomCommandAction)
                             Runtime.getRuntime().exec(action.commandAction).waitFor();
@@ -233,7 +245,7 @@ public class ADBAutomate {
             writer.flush();
         }
         writer.close();
-        Runtime.getRuntime().exec("adb push " + file.getPath() + " /sdcard/mad-automate-rules").waitFor();
+        Runtime.getRuntime().exec(adb + " push " + file.getPath() + " /sdcard/mad-automate-rules").waitFor();
     }
 
     private ArrayList<Action> deserialize(String filePath) throws IOException {
@@ -310,7 +322,7 @@ public class ADBAutomate {
                 while (true) {
 
                     // capturing
-                    Process process = Runtime.getRuntime().exec("adb shell getevent -lc 10 | grep [_][XY]");
+                    Process process = Runtime.getRuntime().exec(adb + " shell getevent -lc 10 | grep [_][XY]");
                     BufferedReader processReader = new BufferedReader(new InputStreamReader(process.getInputStream()));
                     String line;
                     String[] xy = new String[2];
