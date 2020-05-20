@@ -14,6 +14,10 @@ Without Java you're not going to be able to run this project. How should you kno
 
 Follow your platform specific installation instructions for getting it setup (barely takes while).
 
+### Android w/ Root
+
+The app counterpart requires root as injects touch, motion and key events on your behalf that isn't permitted with standard shell access. Nevertheless, if you're planning on just playing around to know how the whole concept of recording and replaying works, neither do you need the Android app nor do you need root.
+
 ### USB Debugging
 
 Without this enabled on your Android device, you'll not see anything happen! Now getting to this option differs with the device in question but most generally, here's what you need to do on your phone:
