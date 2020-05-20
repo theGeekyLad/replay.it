@@ -1,14 +1,17 @@
 package com.thegeekylad.madautomate;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
+import android.Manifest;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.Environment;
 import android.widget.ListView;
 import android.widget.Toast;
 
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.File;
@@ -25,6 +28,9 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         try {
+
+            // storage access permission
+            promptPermissions();
 
             // prompt for superuser access
             Runtime.getRuntime().exec("su");  // prompts for superuser access in case you missed it!
@@ -100,5 +106,12 @@ public class MainActivity extends AppCompatActivity {
 //        } catch (Exception e) {
 //            Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show();
 //        }
+    }
+
+    private void promptPermissions() {
+        if (ActivityCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+            Toast.makeText(this, "Storage access permission is needed to access and edit automation rules.", Toast.LENGTH_LONG).show();
+            ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 0);
+        }
     }
 }
