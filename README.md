@@ -4,7 +4,7 @@ Here's an off-the-charts Android automation project that sits right there, watch
 
 _"Hang on hang on ... what really?"_ - an abstrusely bemused spectator.
 
-If that seemed to bounce for a bit, check out [this YouTube video]()! It covers a nice little automation scenario of pinging your friend _"hey"_ on WhatsApp and lets you have that replayed all over again at a desired time.
+If that seemed to bounce for a bit, check out [this YouTube video](https://youtu.be/mqhi7q1Otz0)! It covers a nice little automation scenario of pinging your friend _"hey"_ on WhatsApp and lets you have that replayed all over again at a desired time.
 
 ## Needs _(10-15m)_
 
@@ -26,7 +26,7 @@ _**Note:** When the device is connected to the PC and you run this program for t
 
 ### Linux + MacOS
 
-- Head to the [releases]() section and download the latest release
+- Head to the [releases](https://github.com/theGeekyLad/replay.it/releases) section and download the latest release
 - Extract the ZIP file in downloads directory to `Downloads/replay.it`
 - Connect your Android device to this PC over a data cable
 - Fire up a terminal _(usually Ctrl+T)_
@@ -35,7 +35,7 @@ _**Note:** When the device is connected to the PC and you run this program for t
 
 ### Windows
 
-- Head to the [releases]() section and download the latest release
+- Head to the [releases](https://github.com/theGeekyLad/replay.it/releases) section and download the latest release
 - Extract the ZIP file in downloads folder to **replay.it** and open that extracted folder
 - Connect your Android device to this PC over a data cable
 - Double-click `adb-automate.bat`

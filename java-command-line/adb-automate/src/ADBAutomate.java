@@ -26,6 +26,7 @@ public class ADBAutomate {
             adb = isUnix ? "./adb/platform-tools-linux-macos/adb" : ".\\adb\\platform-tools-windows\\adb.exe";
             drawLine();
             System.out.println("Enironment: " + (isUnix ? "Linux / MacOS" : "Windows"));
+            drawLine();
 
             // simple query list of devices - throws the adb authentication pop-up
             Process devicesProcess = Runtime.getRuntime().exec(adb + " devices");
@@ -41,7 +42,6 @@ public class ADBAutomate {
 
             // quit if criteria isn't met
             if (!foundListDevicesLine || countDevicesLine != 3) {
-                drawLine();
                 if (!foundListDevicesLine)
                     System.out.println("ADB isn't working for some reason, please contact the developer.");
                 else if (countDevicesLine > 3)
@@ -57,6 +57,25 @@ public class ADBAutomate {
                             "- Ensure device drivers are installed.");
                 drawLine();
                 System.exit(1);
+            }
+
+            // first time app install
+            String thisAppLine = null;
+            boolean hasThisApp = false;
+            Process listThisApp = Runtime.getRuntime().exec(adb + " shell pm list packages | grep com.thegeekylad.madautomate");
+            listThisApp.waitFor();
+            BufferedReader listThisAppReader = new BufferedReader(new InputStreamReader(listThisApp.getInputStream()));
+            while ((thisAppLine = listThisAppReader.readLine()) != null)
+                if (thisAppLine.startsWith("package")) hasThisApp = true;
+            if (!hasThisApp) {
+                System.out.println("Welcome to the first time run! The setup installs the companion\n" +
+                        "Android app and launches it. Please accept necessary permissions on the app\n" +
+                        "in order to ensure smooth functioning. Thanks!");
+                Runtime.getRuntime().exec(adb + " install replay.it.apk").waitFor();
+                Runtime.getRuntime().exec(adb + " shell am start com.thegeekylad.madautomate/.MainActivity").waitFor();
+                System.out.println("\nSetup complete, please re-run the program now.");
+                drawLine();
+                System.exit(0);
             }
 
             // start sniffing for gestures
@@ -322,7 +341,7 @@ public class ADBAutomate {
     }
 
     private void message() {
-        drawLine();
+//        drawLine();
         System.out.println("Add an action:\n" +
                 "(1) Trigger power button\n" +
                 "(2) Type in text\n" +
