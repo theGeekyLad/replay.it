@@ -31,14 +31,14 @@ _**Note:** When the device is connected to the PC and you run this program for t
 - Connect your Android device to this PC over a data cable
 - Fire up a terminal _(usually Ctrl+T)_
 - `cd ~/Downloads/replay.it`
-- `./adb-automate.sh`
+- `./replay.it.sh`
 
 ### Windows
 
 - Head to the [releases](https://github.com/theGeekyLad/replay.it/releases) section and download the latest release
 - Extract the ZIP file in downloads folder to **replay.it** and open that extracted folder
 - Connect your Android device to this PC over a data cable
-- Double-click `adb-automate.bat`
+- Double-click `replay.it.bat`
 
 ## Bugs
 
