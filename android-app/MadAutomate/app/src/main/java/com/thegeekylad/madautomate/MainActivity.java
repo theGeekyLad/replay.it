@@ -26,6 +26,9 @@ public class MainActivity extends AppCompatActivity {
 
         try {
 
+            // prompt for superuser access
+            Runtime.getRuntime().exec("su");  // prompts for superuser access in case you missed it!
+
             // get config files
             File dir = new File(Environment.getExternalStorageDirectory(), "mad-automate-rules");
             String[] configNames = dir.list();
@@ -64,7 +67,7 @@ public class MainActivity extends AppCompatActivity {
             listView.setAdapter(new RuleAdapter(getApplicationContext(), MainActivity.this, rulesObject, listView));
             preferences.edit().putString("rules", rulesObject.toString()).apply();
 
-        } catch (JSONException e) {
+        } catch (Exception e) {
             Toast.makeText(this, "[ERROR] " + e.getMessage(), Toast.LENGTH_SHORT).show();
         }
 

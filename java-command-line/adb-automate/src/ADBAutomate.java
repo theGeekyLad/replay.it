@@ -30,11 +30,34 @@ public class ADBAutomate {
             // simple query list of devices - throws the adb authentication pop-up
             Process devicesProcess = Runtime.getRuntime().exec(adb + " devices");
             devicesProcess.waitFor();
-//            String t1;
-//            BufferedReader reader = new BufferedReader(new InputStreamReader(devicesProcess.getInputStream()));
-//            while ((t1 = reader.readLine()) != null)
-//                System.out.println(t1);
-//            System.out.println("Done");
+            String devicesLine;
+            int countDevicesLine = 0;
+            boolean foundListDevicesLine = false;
+            BufferedReader reader = new BufferedReader(new InputStreamReader(devicesProcess.getInputStream()));
+            while ((devicesLine = reader.readLine()) != null) {
+                if (devicesLine.contains("devices attached")) foundListDevicesLine = true;
+                countDevicesLine++;
+            }
+
+            // quit if criteria isn't met
+            if (!foundListDevicesLine || countDevicesLine != 3) {
+                drawLine();
+                if (!foundListDevicesLine)
+                    System.out.println("ADB isn't working for some reason, please contact the developer.");
+                else if (countDevicesLine > 3)
+                    System.out.println("Looks like there's more than one connected Android device.\n" +
+                            "Program / connected devices may malfunction.\n" +
+                            "Check the following:\n" +
+                            "- Disconnect the Android devices that aren't required\n" +
+                            "- Check if an Android emulator is running and shut it down");
+                else
+                    System.out.println("Couldn't detect any connected Android devices.\n" +
+                            "Check the following:\n" +
+                            "- Ensure USB debugging is enabled on the connected Android device\n" +
+                            "- Ensure device drivers are installed.");
+                drawLine();
+                System.exit(1);
+            }
 
             // start sniffing for gestures
             GrabGesturesThread gesturesThread = new GrabGesturesThread();
@@ -144,6 +167,15 @@ public class ADBAutomate {
 
             // print all recorded points
             Thread.sleep(1000);  // let it breathe
+
+            // quit if there aren't any commands recorded
+            if (actions.size() == 0) {
+                System.out.println("\nCouldn't find any recorded commands, quitting.");
+                drawLine();
+                scanner.close();
+                System.exit(0);
+            }
+
             drawLine(null);
             System.out.println("COMMANDS RECORDED");
             drawLine();
@@ -274,7 +306,7 @@ public class ADBAutomate {
     private void logRules(ArrayList<Action> actions) {
         int i=1;
         for (Action a : actions)
-            System.out.println(String.format("(%s) ", translateAction(a)));
+            System.out.println(String.format("(%s) %s", i++, translateAction(a)));
     }
 
     private String translateAction(Action a) {
