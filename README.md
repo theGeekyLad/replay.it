@@ -16,7 +16,7 @@ Follow your platform specific installation instructions for getting it setup (ba
 
 ### Android w/ Root
 
-The app counterpart requires root as injects touch, motion and key events on your behalf that isn't permitted with standard shell access. Nevertheless, if you're planning on just playing around to know how the whole concept of recording and replaying works, neither do you need the Android app nor do you need root.
+The app counterpart requires root access as injects touch, motion and key events on your behalf that isn't permitted with standard shell access. Nevertheless, if you're planning on just playing around to know how the whole concept of recording and replaying works, neither do you need the Android app nor do you need root.
 
 ### USB Debugging
 
